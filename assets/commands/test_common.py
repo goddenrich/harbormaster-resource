@@ -1,6 +1,5 @@
 import unittest
 import common
-from unittest.mock import patch
 
 class TestPayload(unittest.TestCase):
     def setUp(self):

@@ -1,7 +1,3 @@
-from phabricator import Phabricator
-import sys
-import json
-
 class Source:
     @staticmethod
     def _get_source_value_from_payload(value, payload):
@@ -30,10 +26,6 @@ class Version:
 
     def __repr__(self):
         return {'target': self.target, 'diff': self.diff, 'branch': self.branch, 'revision': self.revision}
-
-
-def version_from_target_diff_rev(target, diff, rev):
-    return Version(target.id, diff.id, diff.branch, rev.id)
 
 
 class Diff:
