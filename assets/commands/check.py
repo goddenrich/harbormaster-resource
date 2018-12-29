@@ -1,35 +1,9 @@
 from phabricator import Phabricator
 import sys
 import json
+from common import Source, Version, Diff, Rev, Target, Build, Buildable
+from common import get_version_from_payload
 
-class Source:
-    @staticmethod
-    def _get_source_value_from_payload(value, payload):
-        try:
-            return payload['source'][value]
-        except KeyError:
-            raise KeyError(f'{value} not found')
-
-    def __init__(self, payload):
-        self.conduit_uri = self._get_source_value_from_payload('conduit_uri', payload)
-        self.conduit_token = self._get_source_value_from_payload('conduit_token', payload)
-
-def get_version_from_payload(payload):
-    target_id = payload['version']['target']
-    diff_id = payload['version']['diff']
-    branch = payload['version']['branch']
-    revision_id = payload['version']['revision_id']
-    return Version(target_id, diff_id, branch, revision_id)
-
-class Version:
-    def __init__(self, target_id, diff_id, branch, revision_id):
-        self.target = target_id
-        self.diff = diff_id
-        self.branch = branch
-        self.revision = 'D' + str(revision_id)
-
-    def __repr__(self):
-        return {'target': self.target, 'diff': self.diff, 'branch': self.branch, 'revision': self.revision}
 
 class Phabricator(Phabricator):
     def __init__(self, conduit_url, conduit_token):
@@ -84,41 +58,6 @@ def get_new_versions(payload, phab):
     return [version_from_target_diff_rev(get_target_diff_rev_from_target(target)) for target in new_targets]
 
 
-class Diff:
-    def __init__(self, data):
-        self.id = data.get('id')
-        self.revisionPHID = data.get('fields',{}).get('revisionPHID')
-        
-        def get_branch(refs):
-            for ref in refs:
-                if ref.get('type') == "branch":
-                    return ref.get('name')
-
-        self.branch = get_branch(data.get('fields', {}).get('refs', []))
-
-class Rev:
-    def __init__(self, data):
-        self.id = data.get('id')
-
-class Target:
-    def __init__(self, data):
-        self.id = data.get('id')
-        self.phid = data.get('phid')
-        self.buildPHID = data.get('fields',{}).get('buildPHID')
-        self.status = data.get('fields',{}).get('status')
-
-class Build:
-    def __init__(self, data):
-        self.id = data.get('id')
-        self.phid = data.get('phid')
-        self.buildablePHID = data.get('fields',{}).get('buildablePHID')
-
-class Buildable:
-    def __init__(self, data):
-        self.id = data.get('id')
-        self.phid = data.get('phid')
-        self.objectPHID = data.get('fields', {}).get('objectPHID')
-        self.containerPHID = data.get('fields', {}).get('containerPHID')
 
 if __name__ == "__main__":
     payload = json.loads(input())
