@@ -26,7 +26,7 @@ class Version:
         self.revision = 'D' + str(revision_id)
 
     def __repr__(self):
-        return {'target': self.target, 'diff': self.diff, 'branch': self.branch, 'revision': self.revision}
+        return '{' + f'"target": "{self.target}", "diff": "{self.diff}", "branch": "{self.branch}", "revision": "{self.revision}"' + '}'
 
 
 class Diff:

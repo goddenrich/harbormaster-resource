@@ -33,7 +33,7 @@ class TestVersion(unittest.TestCase):
         self.version = common.Version('t', 'd', 'b', 'r')
     
     def test_repr(self):
-        self.assertDictEqual(self.version.__repr__(), {'target': 't', 'diff': 'd', 'branch': 'b', 'revision': 'Dr'})
+        self.assertEqual(self.version.__repr__(), '{"target": "t", "diff": "d", "branch": "b", "revision": "Dr"}')
 
 class TestTarget(unittest.TestCase):
     def setUp(self):
@@ -198,32 +198,6 @@ class TestRev(unittest.TestCase):
     def test_init(self):
         self.assertEqual(self.rev.id, 225)
 
-
-class TestPhabricator(unittest.TestCase):
-    def setUp(self):
-        self.latest_target = {'data': [{
-            "id": 2,
-            "type": "HMBT",
-            "phid": "PHID-HMBT-n6rbr4r5djx2o4wii7fm",
-            "fields": {
-                "name": "Make HTTP Request",
-                "buildPHID": "PHID-HMBD-roipk7qjjmwgbtvmzg3c",
-                "buildStepPHID": "PHID-HMCS-kzlrqdivjddl6ervz7zu",
-                "status": {
-                    "value": "target/failed",
-                    "name": "Failed"
-                },
-                "epochStarted": 1545663455,
-                "epochCompleted": 1545663456,
-                "buildGeneration": 2,
-                "dateCreated": 1545663455,
-                "dateModified": 1545663456,
-                "policy": {
-                    "view": "users"
-                }
-            },
-            "attachments": {}
-        }]}
 
 if __name__ == '__main__':
     unittest.main()
