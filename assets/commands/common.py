@@ -25,9 +25,11 @@ class Version:
         self.branch = branch
         self.revision = 'D' + str(revision_id)
 
-    def __repr__(self):
-        return '{' + f'"target": "{self.target}", "diff": "{self.diff}", "branch": "{self.branch}", "revision": "{self.revision}"' + '}'
+    def dict(self):
+        return self.__dict__
 
+def versions_to_json(versions):
+    return [version.dict() for version in versions]
 
 class Diff:
     def __init__(self, data):

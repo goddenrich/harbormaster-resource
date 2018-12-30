@@ -31,9 +31,11 @@ class TestPayload(unittest.TestCase):
 class TestVersion(unittest.TestCase):
     def setUp(self):
         self.version = common.Version('t', 'd', 'b', 'r')
-    
+
     def test_repr(self):
-        self.assertEqual(self.version.__repr__(), '{"target": "t", "diff": "d", "branch": "b", "revision": "Dr"}')
+        self.assertDictEqual(self.version.dict(), {"target": "t", "diff": "d", "branch": "b", "revision": "Dr"})
+    def test_versions_to_json(self):
+        self.assertListEqual(common.versions_to_json([self.version]), [{'branch': 'b', 'diff': 'd', 'revision': 'Dr', 'target': 't'}])
 
 class TestTarget(unittest.TestCase):
     def setUp(self):
