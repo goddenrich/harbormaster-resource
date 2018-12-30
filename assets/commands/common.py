@@ -11,10 +11,11 @@ class Source:
         self.conduit_token = self._get_source_value_from_payload('conduit_token', payload)
 
 def get_version_from_payload(payload):
-    target_id = payload['version']['target']
-    diff_id = payload['version']['diff']
-    branch = payload['version']['branch']
-    revision_id = payload['version']['revision_id']
+    version = payload.get('version', {})
+    target_id = version.get('target')
+    diff_id = version.get('diff')
+    branch = version.get('branch')
+    revision_id = version.get('revision_id')
     return Version(target_id, diff_id, branch, revision_id)
 
 class Version:
