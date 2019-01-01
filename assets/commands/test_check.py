@@ -79,6 +79,13 @@ class TestPhabricator(unittest.TestCase):
             },
             'version': {}
         }
+        self.none_version_payload = {
+            'source': {
+                "conduit_uri": "https://test.conduit.uri/api/",
+                "conduit_token": "test-conduit-token",
+            },
+            'version': None
+        }
         self.previous_version_payload = {
             "source": {
                 "conduit_uri": "https://test.conduit.uri/api/",
@@ -104,6 +111,10 @@ class TestPhabricator(unittest.TestCase):
 
     def test_get_latest_if_empty_version_in_payload(self):
         new_versions = check.get_new_versions(self.mock_obj, self.empty_version_payload)
+        self.assertIsNone(self.mock_obj.harbourmaster.target.search.assert_called_with(limit=1))
+
+    def test_get_latest_if_none_version_in_payload(self):
+        new_versions = check.get_new_versions(self.mock_obj, self.none_version_payload)
         self.assertIsNone(self.mock_obj.harbourmaster.target.search.assert_called_with(limit=1))
 
     def test_get_versions_since_if_version_in_payload(self):
