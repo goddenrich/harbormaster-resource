@@ -20,10 +20,10 @@ def get_version_from_payload(payload):
 
 class Version:
     def __init__(self, target_id, diff_id, branch, revision_id):
-        self.target = target_id
-        self.diff = diff_id
-        self.branch = branch
-        self.revision = 'D' + str(revision_id)
+        self.target = str(target_id) if target_id else None
+        self.diff = str(diff_id) if diff_id else None
+        self.branch = str(branch) if branch else None
+        self.revision = 'D' + str(revision_id) if revision_id else None
 
     def dict(self):
         return self.__dict__
