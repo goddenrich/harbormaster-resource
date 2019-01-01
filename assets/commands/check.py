@@ -2,7 +2,7 @@ from phabricator import Phabricator
 import phabricator
 import json
 from common import Source, Version, Diff, Rev, Target, Build, Buildable
-from common import get_version_from_payload
+from common import get_version_from_payload, versions_to_json
 
 
 # TODO(goddenrich) make this work if over max number returned by conduit
@@ -55,4 +55,4 @@ if __name__ == "__main__":
     phab = Phabricator(host=source.conduit_uri, token=source.conduit_token)
     phab.update_interfaces()
     new_versions = get_new_versions(phab, payload)
-    print(json.dumps(new_versions))
+    print(json.dumps(versions_to_json(new_versions)))
