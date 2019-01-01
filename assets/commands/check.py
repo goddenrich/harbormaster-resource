@@ -8,16 +8,16 @@ from common import get_version_from_payload
 # TODO(goddenrich) make this work if over max number returned by conduit
 def get_targets_since(phab, target_id):
     if target_id:
-        search = phab.harbourmaster.target.search(order=['-id'], after=int(target_id)-1).get('data')
+        search = phab.harbormaster.target.search(order=['-id'], after=int(target_id)-1).get('data')
     else:
-        search = phab.harbourmaster.target.search(limit=1).get('data')
+        search = phab.harbormaster.target.search(limit=1).get('data')
     return [Target(target_data) for target_data in search]
 
 def get_build_from_PHID(phab, phid):
-    return Build(phab.harbourmaster.build.search(constraints={'phids': [phid]}).get('data')[0])
+    return Build(phab.harbormaster.build.search(constraints={'phids': [phid]}).get('data')[0])
 
 def get_buildable_from_PHID(phab, phid):
-    return Buildable(phab.harbourmaster.buildable.search(constraints={'phids': [phid]}).get('data')[0])
+    return Buildable(phab.harbormaster.buildable.search(constraints={'phids': [phid]}).get('data')[0])
 
 def get_diff_from_PHID(phab, phid):
     return Diff(phab.differential.diff.search(constraints={'phids': [phid]}).get('data')[0])

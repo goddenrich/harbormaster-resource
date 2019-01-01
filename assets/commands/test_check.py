@@ -98,35 +98,35 @@ class TestPhabricator(unittest.TestCase):
                 "revision_id": "testrev",
             }
         }
-        self.mock_obj.harbourmaster.target.search.return_value = target_response
-        self.mock_obj.harbourmaster.build.search.return_value = build_response
-        self.mock_obj.harbourmaster.buildable.search.return_value = buildable_response
+        self.mock_obj.harbormaster.target.search.return_value = target_response
+        self.mock_obj.harbormaster.build.search.return_value = build_response
+        self.mock_obj.harbormaster.buildable.search.return_value = buildable_response
         self.mock_obj.differential.diff.search.return_value = diff_response
         self.mock_obj.differential.revision.search.return_value = rev_response
 
 
     def test_get_latest_if_no_version_in_payload(self):
         new_versions = check.get_new_versions(self.mock_obj, self.no_version_payload)
-        self.assertIsNone(self.mock_obj.harbourmaster.target.search.assert_called_with(limit=1))
+        self.assertIsNone(self.mock_obj.harbormaster.target.search.assert_called_with(limit=1))
 
     def test_get_latest_if_empty_version_in_payload(self):
         new_versions = check.get_new_versions(self.mock_obj, self.empty_version_payload)
-        self.assertIsNone(self.mock_obj.harbourmaster.target.search.assert_called_with(limit=1))
+        self.assertIsNone(self.mock_obj.harbormaster.target.search.assert_called_with(limit=1))
 
     def test_get_latest_if_none_version_in_payload(self):
         new_versions = check.get_new_versions(self.mock_obj, self.none_version_payload)
-        self.assertIsNone(self.mock_obj.harbourmaster.target.search.assert_called_with(limit=1))
+        self.assertIsNone(self.mock_obj.harbormaster.target.search.assert_called_with(limit=1))
 
     def test_get_versions_since_if_version_in_payload(self):
         new_versions = check.get_new_versions(self.mock_obj, self.previous_version_payload)
         previous_version_target_id = int(self.previous_version_payload['version']['target'])
-        self.assertIsNone(self.mock_obj.harbourmaster.target.search.assert_called_with(after=previous_version_target_id-1, order=['-id']))
+        self.assertIsNone(self.mock_obj.harbormaster.target.search.assert_called_with(after=previous_version_target_id-1, order=['-id']))
 
     def test_correct_call_for_build_buildable_diff_ref(self):
         new_versions = check.get_new_versions(self.mock_obj, self.previous_version_payload)
 
-        self.assertIsNone(self.mock_obj.harbourmaster.build.search.assert_called_with(constraints={'phids':["PHID-HMBD-roipk7qjjmwgbtvmzg3c"]}))
-        self.assertIsNone(self.mock_obj.harbourmaster.buildable.search.assert_called_with(constraints={'phids':["PHID-HMBB-en7qg4hzo7gg2fuqlmry"]}))
+        self.assertIsNone(self.mock_obj.harbormaster.build.search.assert_called_with(constraints={'phids':["PHID-HMBD-roipk7qjjmwgbtvmzg3c"]}))
+        self.assertIsNone(self.mock_obj.harbormaster.buildable.search.assert_called_with(constraints={'phids':["PHID-HMBB-en7qg4hzo7gg2fuqlmry"]}))
         self.assertIsNone(self.mock_obj.differential.diff.search.assert_called_with(constraints={'phids':["PHID-DIFF-ya5b4a5urnyikincj6e5"]}))
         self.assertIsNone(self.mock_obj.differential.revision.search.assert_called_with(constraints={'phids':["PHID-DREV-d2s436jqt4pqsfucs6pm"]}))
 

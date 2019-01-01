@@ -1,15 +1,15 @@
-# Harbourmaster-resource
+# Harbormaster-resource
 
-Tracks the targets created by harbourmaster and their associated diffs and revisions in [phabricator](https://secure.phabricator.com).
+Tracks the targets created by harbormaster and their associated diffs and revisions in [phabricator](https://secure.phabricator.com).
 
 ## Deploying to concourse
 
 ```
 resource_types:
-- name: harbourmaster-resource
+- name: harbormaster-resource
   type: docker-image
   source:
-    repository: goddenrich/harbourmaster-resource
+    repository: goddenrich/harbormaster-resource
     tag: latest
 ```
 
@@ -62,18 +62,18 @@ Resource configuration for a private repo with an HTTPS proxy:
 
 ``` yaml
 resource_types:
-- name: harbourmaster-resource
+- name: harbormaster-resource
   type: docker-image
   source:
-    repository: goddenrich/harbourmaster-resource
+    repository: goddenrich/harbormaster-resource
     tag: latest
 
 resources:
-- name: harbourmaster-target
-  type: harbourmaster-resource
+- name: harbormaster-target
+  type: harbormaster-resource
   source:
     conduit_uri: https://secure.phabricator.com/
-    conduit_toke: secret-token-xxxxxx
+    conduit_token: secret-token-xxxxxx
     repo_uri: git@github.com:concourse/git-resource.git
     private_key: |
       -----BEGIN RSA PRIVATE KEY-----
@@ -94,7 +94,7 @@ resources:
 Create a branch with the patch of the diff associated with the target found:
 
 ``` yaml
-- get: harbourmaster-target
+- get: harbormaster-target
 ```
 
 ## Behavior
@@ -132,7 +132,7 @@ Currently no-op but plan to return the outcome of the build to phabricator.
 Run the tests with the following command:
 
 ```sh
-docker build -t harbourmaster-resource .
+docker build -t harbormaster-resource .
 ```
 
 ### Contributing
