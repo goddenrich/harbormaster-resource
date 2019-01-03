@@ -19,10 +19,14 @@ class TestOut(unittest.TestCase):
     def test_get_build_status_from_payload(self):
         self.assertEqual(self.build_status, "pass")
 
-    # TODO(goddenrich) figure out how to get the targetPHID here
+    def test_get_target_phid_from_git_config(self):
+        self.assertEqual(out.get_target_phid_from_git_config(), 'target-phid-config')
+
+
     def test_update_phabricator_with_build_status(self):
-        out.update_phabricator_with_build_status(self.mock_obj, self.build_status)
-        self.assertIsNone(self.mock_obj.harbormaster.sendmessage.assert_called_once_with(buildTargetPHID='testTargetPHID', type='pass'))
+        targetPHID = 'testTargetPHID'
+        out.update_phabricator_with_build_status(self.mock_obj, targetPHID, self.build_status)
+        self.assertIsNone(self.mock_obj.harbormaster.sendmessage.assert_called_once_with(buildTargetPHID=targetPHID, type='pass'))
 
 if __name__ == '__main__':
     unittest.main()
