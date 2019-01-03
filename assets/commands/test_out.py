@@ -20,7 +20,7 @@ class TestOut(unittest.TestCase):
         self.assertEqual(self.build_status, "pass")
 
     def test_get_target_phid_from_git_config(self):
-        self.assertEqual(out.get_target_phid_from_git_config(), 'target-phid-config')
+        self.assertEqual(out.get_target_phid('test_gitconfig'), 'target-phid-config')
 
 
     def test_update_phabricator_with_build_status(self):
