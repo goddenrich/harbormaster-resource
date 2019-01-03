@@ -2,5 +2,7 @@
 
 set -e
 
-echo -e 'no put tests run put is no-op'
+python /opt/resource/commands/test_out.py
+
+echo -e "check tests passed!"
 echo -e "--------------------------------------------"
