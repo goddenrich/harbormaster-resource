@@ -132,7 +132,7 @@ class TestPhabricator(unittest.TestCase):
 
     def test_correct_version_constructed(self):
         new_version = check.get_new_versions(self.mock_obj, self.previous_version_payload)[0]
-        self.assertEqual(new_version.target, "2")
+        self.assertEqual(new_version.target, "PHID-HMBT-n6rbr4r5djx2o4wii7fm")
         self.assertEqual(new_version.diff, "932")
         self.assertEqual(new_version.branch, "arcpatch-D225_3")
         self.assertEqual(new_version.revision, "D225")
