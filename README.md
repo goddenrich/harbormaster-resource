@@ -105,17 +105,11 @@ The phabricator api (conduit) is accessed to get any targets that have been crea
 since the one in the latest version. If no version is given, the most recent target
 (and its associated data) is returned.
 
-### `in`: Currently no-op but plan:
-Clone the repository checking out the code associated with the diff for the target.
+### `in`: Checkout the diff associated with the target:
+Clone the repository with two branches: master and pr (checked out). pr contains the diff
+associated with the target and master contains the default branch of the repo.
 
-Clones the default branch of the repository specified by repo_uri to the
-destination, and creates a new branch with the patch for the diff associated with the target.
-
-#### Parameters
-
-* `depth`: *Optional.* If a positive integer is given, *shallow* clone the
-  repository using the `--depth` option. When attempting to apply the patch
-  the depth is extended till the base of the diff is found.
+This currently only works if you have a staging area contained within the repo itself.
 
 ### `out`: No op (for now)
 
@@ -127,7 +121,7 @@ Currently no-op but plan to return the outcome of the build to phabricator.
 
 * docker is *required*
 
-### Running the tests (none yet)
+### Running the tests
 
 Run the tests with the following command:
 
