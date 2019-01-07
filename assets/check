@@ -15,4 +15,26 @@ payload=$TMPDIR/harbourmaster-resource-request
 
 cat > $payload <&0
 
+conduit_uri=$(jq -r '.source.conduit_uri // ""' < $payload)
+conduit_token=$(jq -r '.source.conduit_token // ""' < $payload)
+buildStepPHID=$(jq -r '.source.buildStepPHID // ""' < $payload)
+
+if [ -z "$conduit_uri" ]; then
+  echo "invalid payload (missing conduit_uri):" >&2
+  cat $payload >&2
+  exit 1
+fi
+
+if [ -z "$conduit_token" ]; then
+  echo "invalid payload (missing conduit_token):" >&2
+  cat $payload >&2
+  exit 1
+fi
+
+if [ -z "$buildStepPHID" ]; then
+  echo "invalid payload (missing buildStepPHID):" >&2
+  cat $payload >&2
+  exit 1
+fi
+
 python $(dirname $0)/commands/check.py >&3 < $payload
