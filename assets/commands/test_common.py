@@ -15,6 +15,7 @@ class TestPayload(unittest.TestCase):
                 "diff": "diffID",
                 "branch": "test-branch",
                 "revision_id": "testrev",
+                "base": "baseref"
             }
         }
         self.version = common.get_version_from_payload(self.payload)
@@ -30,12 +31,13 @@ class TestPayload(unittest.TestCase):
         self.assertEqual(self.version.targetPHID, "BTID")
         self.assertEqual(self.version.diff, "diffID")
         self.assertEqual(self.version.branch, "test-branch")
+        self.assertEqual(self.version.base, "baseref")
         self.assertEqual(self.version.revision, "Dtestrev")
 
 class TestVersion(unittest.TestCase):
     def setUp(self):
-        self.version = common.Version('t', 'p', 'd', 'b', 'r')
-        self.one_return = {'branch': 'b', 'diff': 'd', 'revision': 'Dr', 'target': 't', 'targetPHID': 'p'}
+        self.version = common.Version('t', 'p', 'd', 'b', 'ba', 'r')
+        self.one_return = {'branch': 'b', 'base': 'ba', 'diff': 'd', 'revision': 'Dr', 'target': 't', 'targetPHID': 'p'}
 
     def test_repr(self):
         self.assertDictEqual(self.version.dict(), self.one_return)
@@ -176,6 +178,7 @@ class TestDiff(unittest.TestCase):
         self.assertEqual(self.diff.id, 932)
         self.assertEqual(self.diff.revisionPHID, "PHID-DREV-lyl4plyiheajccqjkmo6")
         self.assertEqual(self.diff.branch, "arcpatch-D225_3")
+        self.assertEqual(self.diff.base, "5666cdb29e45042565d921b0672f07814aacc06f")
 
 class TestRev(unittest.TestCase):
     def setUp(self):

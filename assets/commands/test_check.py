@@ -57,6 +57,10 @@ class TestPhabricator(unittest.TestCase):
                                     "type": "branch",
                                     "name": "arcpatch-D225_3"
                                 },
+                                {
+                                    "type": "base",
+                                    "identifier": "base_ref"
+                                },
                             ],
                         },
                     }
@@ -168,6 +172,7 @@ class TestPhabricator(unittest.TestCase):
         self.assertEqual(new_version.diff, "932")
         self.assertEqual(new_version.branch, "arcpatch-D225_3")
         self.assertEqual(new_version.revision, "D225")
+        self.assertEqual(new_version.base, "base_ref")
 
     def test_check_and_return_one_item_from_phid_search(self):
         empty_response = {}

@@ -37,6 +37,7 @@ depth=$(jq -r '(.params.depth // 0)' < $payload)
 diff=$(jq -r '.version.diff // 0' < $payload)
 target_phid=$(jq -r '.version.targetPHID // ""' < $payload)
 version=$(jq -r '.version' < $payload)
+base=$(jq -r '.version.base // ""' < $payload)
 
 configure_git_global "${git_config_payload}"
 
@@ -54,15 +55,13 @@ fi
 git clone --single-branch $repo_uri $destination $depthflag
 cd $destination
 
-git fetch origin phabricator/diff/"$diff"
-git tag phabricator/diff/"$diff" FETCH_HEAD
-
-git fetch origin phabricator/base/"$diff"
-git tag phabricator/base/"$diff" FETCH_HEAD
-base=$(git rev-list -n 1 phabricator/base/"$diff")
-
 concourse_git_resource__depth="$depth" \
   "$bin_dir"/deepen_shallow_clone_until_ref_is_found "$base"
+
+if ! git rev-list -n 1 phabricator/diff/"$diff" > /dev/null; then
+  git fetch origin phabricator/diff/"$diff"
+  git tag phabricator/diff/"$diff" FETCH_HEAD
+fi
 
 git checkout -b pr phabricator/diff/$diff
 

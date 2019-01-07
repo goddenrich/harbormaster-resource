@@ -53,7 +53,7 @@ def version_from_target(phab, target):
     buildable = get_buildable_from_build(phab, build)
     diff = get_diff_from_buildable(phab, buildable)
     rev = get_rev_from_buildable(phab, buildable)
-    return Version(target.id, target.phid, diff.id, diff.branch, rev.id)
+    return Version(target.id, target.phid, diff.id, diff.branch, diff.base, rev.id)
 
 def get_new_versions(phab, payload, step=None):
     last_version = get_version_from_payload(payload)

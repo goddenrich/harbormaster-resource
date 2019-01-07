@@ -17,15 +17,17 @@ def get_version_from_payload(payload):
     target_phid = version.get('targetPHID')
     diff_id = version.get('diff')
     branch = version.get('branch')
+    base = version.get('base')
     revision_id = version.get('revision_id')
-    return Version(target_id, target_phid, diff_id, branch, revision_id)
+    return Version(target_id, target_phid, diff_id, branch, base, revision_id)
 
 class Version:
-    def __init__(self, target_id, target_phid, diff_id, branch, revision_id):
+    def __init__(self, target_id, target_phid, diff_id, branch, base, revision_id):
         self.target = str(target_id) if target_id else None
         self.targetPHID = str(target_phid) if target_phid else None
         self.diff = str(diff_id) if diff_id else None
         self.branch = str(branch) if branch else None
+        self.base = str(base) if base else None
         self.revision = 'D' + str(revision_id) if revision_id else None
 
     def dict(self):
@@ -39,12 +41,18 @@ class Diff:
         self.id = data.get('id')
         self.revisionPHID = data.get('fields',{}).get('revisionPHID')
         
+        def get_base(refs):
+            for ref in refs:
+                if ref.get('type') == "base":
+                    return ref.get('identifier')
         def get_branch(refs):
             for ref in refs:
                 if ref.get('type') == "branch":
                     return ref.get('name')
 
-        self.branch = get_branch(data.get('fields', {}).get('refs', []))
+        refs = data.get('fields', {}).get('refs', [])
+        self.branch = get_branch(refs)
+        self.base = get_base(refs)
 
 class Rev:
     def __init__(self, data):
