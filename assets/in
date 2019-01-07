@@ -46,10 +46,21 @@ if [ -z "$repo_uri" ]; then
   exit 1
 fi
 
-git clone --single-branch $repo_uri $destination --depth 1
+depthflag=""
+if test "$depth" -gt 0 2> /dev/null; then
+  depthflag="--depth $depth"
+fi
+
+git clone --single-branch $repo_uri $destination $depthflag
 cd $destination
 
-git fetch origin refs/tags/phabricator/diff/$diff:refs/tags/phabricator/diff/$diff
+git fetch origin refs/tags/phabricator/diff/"$diff":refs/tags/phabricator/diff/"$diff"
+git fetch origin refs/tags/phabricator/base/"$diff":refs/tags/phabricator/base/"$diff"
+base=$(git rev-list -n 1 phabricator/base/"$diff")
+
+concourse_git_resource__depth="$depth" \
+  "$bin_dir"/deepen_shallow_clone_until_ref_is_found "$base"
+
 git checkout -b pr phabricator/diff/$diff
 
 git config --add phabricator.targetPHID $target_phid
