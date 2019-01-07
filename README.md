@@ -1,6 +1,6 @@
 # Harbormaster-resource
 
-Tracks the targets created by harbormaster and their associated diffs and revisions in [phabricator](https://secure.phabricator.com).
+Tracks the targets created by harbormaster which belong to a given build step and their associated diffs and revisions in [phabricator](https://secure.phabricator.com).
 
 ## Deploying to concourse
 
@@ -18,6 +18,8 @@ resource_types:
 * `conduit_uri`: *Required.* The uri of the phabricator api.
 
 * `conduit_token`: *Required.* The token to use to authenticate the conduit api call.
+
+* `buildStepPHID`: *Required.* The phid of the build step to track targets against.
 
 * `repo_uri`: *Required.* The uri of the git repo.
 

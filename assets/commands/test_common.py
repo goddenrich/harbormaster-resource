@@ -7,6 +7,7 @@ class TestPayload(unittest.TestCase):
             "source": {
                 "conduit_uri": "https://test.conduit.uri/api/",
                 "conduit_token": "test-conduit-token",
+                "buildStepPHID": "test-step",
             },
             "version": {
                 "target": "BTID",
@@ -21,6 +22,7 @@ class TestPayload(unittest.TestCase):
     def test_get_from_source(self):
         self.assertEqual(self.source.conduit_token, "test-conduit-token")
         self.assertEqual(self.source.conduit_uri, "https://test.conduit.uri/api/")
+        self.assertEqual(self.source.buildStepPHID, "test-step")
 
     def test_get_version_from_payload(self):
         self.assertEqual(self.version.target, "BTID")
@@ -73,6 +75,7 @@ class TestTarget(unittest.TestCase):
         self.assertEqual(self.target.phid, "PHID-HMBT-n6rbr4r5djx2o4wii7fm")
         self.assertEqual(self.target.buildPHID, "PHID-HMBD-roipk7qjjmwgbtvmzg3c")
         self.assertDictEqual(self.target.status, {"value": "target/failed", "name": "Failed"})
+        self.assertEqual(self.target.buildStepPHID, "PHID-HMCS-kzlrqdivjddl6ervz7zu")
 
 class TestBuild(unittest.TestCase):
     def setUp(self):

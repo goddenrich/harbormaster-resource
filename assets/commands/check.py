@@ -55,15 +55,18 @@ def version_from_target(phab, target):
     rev = get_rev_from_buildable(phab, buildable)
     return Version(target.phid, diff.id, diff.branch, rev.id)
 
-def get_new_versions(phab, payload):
+def get_new_versions(phab, payload, step=None):
     last_version = get_version_from_payload(payload)
     new_targets = get_targets_since(phab, last_version.target)
-    return [version_from_target(phab, target) for target in new_targets]
+    if step:
+        return [version_from_target(phab, target) for target in new_targets if target.buildStepPHID == step]
+    else:
+        return [version_from_target(phab, target) for target in new_targets]
 
 if __name__ == "__main__":
     payload = json.loads(input())
     source = Source(payload)
     phab = Phabricator(host=source.conduit_uri, token=source.conduit_token)
     phab.update_interfaces()
-    new_versions = get_new_versions(phab, payload)
+    new_versions = get_new_versions(phab, payload, source.buildStepPHID)
     print(json.dumps(versions_to_json(new_versions)))

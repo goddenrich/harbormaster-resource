@@ -127,6 +127,33 @@ class TestPhabricator(unittest.TestCase):
         previous_version_target_id = int(self.previous_version_payload['version']['target'])
         self.assertIsNone(self.mock_obj.harbormaster.target.search.assert_called_with(after=previous_version_target_id-1, order=['-id']))
 
+    def test_get_versions_since_filters_build_step_phid(self):
+        target_response = {
+            'data':
+                [
+                    {
+                        "id": 2,
+                        "phid": "should-get-this-PHID",
+                        "fields": {
+                            "buildPHID": "PHID-HMBD-roipk7qjjmwgbtvmzg3c",
+                            "buildStepPHID": "should-remain",
+                        },
+                    },
+                    {
+                        "id": 3,
+                        "phid": "should-not-get-this-PHID",
+                        "fields": {
+                            "buildPHID": "PHID-HMBD-roipk7qjjmwgbtvmzg3c",
+                            "buildStepPHID": "should-be-filtered-out",
+                        },
+                    }
+                ]
+        }
+        self.mock_obj.harbormaster.target.search.return_value = target_response
+        new_versions = check.get_new_versions(self.mock_obj, self.previous_version_payload, 'should-remain')
+        target_ids = [version.target for version in new_versions]
+        self.assertListEqual(target_ids, ['should-get-this-PHID'])
+    
     def test_correct_call_for_build_buildable_diff_ref(self):
         new_versions = check.get_new_versions(self.mock_obj, self.previous_version_payload)
 

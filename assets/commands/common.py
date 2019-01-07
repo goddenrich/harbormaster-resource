@@ -9,6 +9,7 @@ class Source:
     def __init__(self, payload):
         self.conduit_uri = self._get_source_value_from_payload('conduit_uri', payload)
         self.conduit_token = self._get_source_value_from_payload('conduit_token', payload)
+        self.buildStepPHID = self._get_source_value_from_payload('buildStepPHID', payload)
 
 def get_version_from_payload(payload):
     version = payload.get('version', {}) or {}
@@ -51,14 +52,15 @@ class Target:
     def __init__(self, data):
         self.id = data.get('id')
         self.phid = data.get('phid')
-        self.buildPHID = data.get('fields',{}).get('buildPHID')
-        self.status = data.get('fields',{}).get('status')
+        self.buildPHID = data.get('fields', {}).get('buildPHID')
+        self.status = data.get('fields', {}).get('status')
+        self.buildStepPHID = data.get('fields', {}).get('buildStepPHID')
 
 class Build:
     def __init__(self, data):
         self.id = data.get('id')
         self.phid = data.get('phid')
-        self.buildablePHID = data.get('fields',{}).get('buildablePHID')
+        self.buildablePHID = data.get('fields', {}).get('buildablePHID')
 
 class Buildable:
     def __init__(self, data):
