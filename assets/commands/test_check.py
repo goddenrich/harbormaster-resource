@@ -1,70 +1,75 @@
 import unittest
 import check
 from unittest import mock
-from pkg_resources import resource_string
+
 
 class TestPhabricator(unittest.TestCase):
     @mock.patch('check.Phabricator')
     def setUp(self, mock_phab):
-        self.mock_obj = mock_phab.return_value = mock.Mock() 
-        target_response = {'data': 
-            [
-                {
-                    "id": 2,
-                    "phid": "PHID-HMBT-n6rbr4r5djx2o4wii7fm",
-                    "fields": {
-                        "buildPHID": "PHID-HMBD-roipk7qjjmwgbtvmzg3c",
-                    },
-                }
-            ]
+        self.mock_obj = mock_phab.return_value = mock.Mock()
+        target_response = {
+            'data':
+                [
+                    {
+                        "id": 2,
+                        "phid": "PHID-HMBT-n6rbr4r5djx2o4wii7fm",
+                        "fields": {
+                            "buildPHID": "PHID-HMBD-roipk7qjjmwgbtvmzg3c",
+                        },
+                    }
+                ]
         }
-        build_response = {'data':
-            [
-                {
-                    "id": 1,
-                    "phid": "PHID-HMBD-roipk7qjjmwgbtvmzg3c",
-                    "fields": {
-                        "buildablePHID": "PHID-HMBB-en7qg4hzo7gg2fuqlmry",
-                    },
-                }
-            ]
+        build_response = {
+            'data':
+                [
+                    {
+                        "id": 1,
+                        "phid": "PHID-HMBD-roipk7qjjmwgbtvmzg3c",
+                        "fields": {
+                            "buildablePHID": "PHID-HMBB-en7qg4hzo7gg2fuqlmry",
+                        },
+                    }
+                ]
         }
-        buildable_response = {'data':
-            [
-                {
-                    "id": 1,
-                    "type": "HMBB",
-                    "phid": "PHID-HMBB-en7qg4hzo7gg2fuqlmry",
-                    "fields": {
-                        "objectPHID": "PHID-DIFF-ya5b4a5urnyikincj6e5",
-                        "containerPHID": "PHID-DREV-d2s436jqt4pqsfucs6pm",
-                    },
-                }
-            ]
+        buildable_response = {
+            'data':
+                [
+                    {
+                        "id": 1,
+                        "type": "HMBB",
+                        "phid": "PHID-HMBB-en7qg4hzo7gg2fuqlmry",
+                        "fields": {
+                            "objectPHID": "PHID-DIFF-ya5b4a5urnyikincj6e5",
+                            "containerPHID": "PHID-DREV-d2s436jqt4pqsfucs6pm",
+                        },
+                    }
+                ]
         }
-        diff_response = {'data':
-            [
-                {
-                    "id": 932,
-                    "phid": "PHID-DIFF-zbyph2rdona74vcgsu2g",
-                    "fields": {
-                        "refs": [
-                            {
-                                "type": "branch",
-                                "name": "arcpatch-D225_3"
-                            },
-                        ],
-                    },
-                }
-            ]
+        diff_response = {
+            'data':
+                [
+                    {
+                        "id": 932,
+                        "phid": "PHID-DIFF-zbyph2rdona74vcgsu2g",
+                        "fields": {
+                            "refs": [
+                                {
+                                    "type": "branch",
+                                    "name": "arcpatch-D225_3"
+                                },
+                            ],
+                        },
+                    }
+                ]
         }
-        rev_response = {'data':
-            [
-                {
-                    "id": 225,
-                    "phid": "PHID-DREV-lyl4plyiheajccqjkmo6",
-                },
-            ]
+        rev_response = {
+            'data':
+                [
+                    {
+                        "id": 225,
+                        "phid": "PHID-DREV-lyl4plyiheajccqjkmo6",
+                    },
+                ]
         }
         self.no_version_payload = {
             "source": {
@@ -136,6 +141,17 @@ class TestPhabricator(unittest.TestCase):
         self.assertEqual(new_version.diff, "932")
         self.assertEqual(new_version.branch, "arcpatch-D225_3")
         self.assertEqual(new_version.revision, "D225")
+
+    def test_check_and_return_one_item_from_phid_search(self):
+        empty_response = {}
+        data_empty = {'data': []}
+        one_item = {'data': [{'one_item': 'value'}]}
+        two_items = {'data': [{'1':'value1'}, {'2':'value2'}]}
+        self.assertDictEqual(check._check_and_return_one_item_from_phid_search(empty_response), {})
+        self.assertDictEqual(check._check_and_return_one_item_from_phid_search(data_empty), {})
+        self.assertDictEqual(check._check_and_return_one_item_from_phid_search(one_item), {'one_item': 'value'})
+        with self.assertRaises(ValueError):
+            check._check_and_return_one_item_from_phid_search(two_items)
 
 if __name__ == '__main__':
     unittest.main()

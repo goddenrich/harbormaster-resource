@@ -13,17 +13,28 @@ def get_targets_since(phab, target_id):
         search = phab.harbormaster.target.search(limit=1).get('data')
     return [Target(target_data) for target_data in search]
 
+def _check_and_return_one_item_from_phid_search(response):
+    data = response.get('data', [])
+    if len(data) > 1:
+        raise ValueError('phid search returned one item when one expected')
+    else:
+        return data[0] if data else {}
+
 def get_build_from_PHID(phab, phid):
-    return Build(phab.harbormaster.build.search(constraints={'phids': [phid]}).get('data')[0])
+    response = phab.harbormaster.build.search(constraints={'phids': [phid]})
+    return Build(_check_and_return_one_item_from_phid_search(response))
 
 def get_buildable_from_PHID(phab, phid):
-    return Buildable(phab.harbormaster.buildable.search(constraints={'phids': [phid]}).get('data')[0])
+    response = phab.harbormaster.buildable.search(constraints={'phids': [phid]})
+    return Buildable(_check_and_return_one_item_from_phid_search(response))
 
 def get_diff_from_PHID(phab, phid):
-    return Diff(phab.differential.diff.search(constraints={'phids': [phid]}).get('data')[0])
+    response = phab.differential.diff.search(constraints={'phids': [phid]})
+    return Diff(_check_and_return_one_item_from_phid_search(response))
 
 def get_rev_from_PHID(phab, phid):
-    return Rev(phab.differential.revision.search(constraints={'phids': [phid]}).get('data')[0])
+    response = phab.differential.revision.search(constraints={'phids': [phid]})
+    return Rev(_check_and_return_one_item_from_phid_search(response))
 
 def get_build_from_target(phab, target):
     return get_build_from_PHID(phab, target.buildPHID)
