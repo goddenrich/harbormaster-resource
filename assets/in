@@ -54,8 +54,11 @@ fi
 git clone --single-branch $repo_uri $destination $depthflag
 cd $destination
 
-git fetch origin refs/tags/phabricator/diff/"$diff":refs/tags/phabricator/diff/"$diff"
-git fetch origin refs/tags/phabricator/base/"$diff":refs/tags/phabricator/base/"$diff"
+git fetch origin phabricator/diff/"$diff"
+git tag phabricator/diff/"$diff" FETCH_HEAD
+
+git fetch origin phabricator/base/"$diff"
+git tag phabricator/base/"$diff" FETCH_HEAD
 base=$(git rev-list -n 1 phabricator/base/"$diff")
 
 concourse_git_resource__depth="$depth" \
