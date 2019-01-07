@@ -10,7 +10,8 @@ class TestPayload(unittest.TestCase):
                 "buildStepPHID": "test-step",
             },
             "version": {
-                "target": "BTID",
+                "target": "5",
+                "targetPHID": "BTID",
                 "diff": "diffID",
                 "branch": "test-branch",
                 "revision_id": "testrev",
@@ -25,15 +26,16 @@ class TestPayload(unittest.TestCase):
         self.assertEqual(self.source.buildStepPHID, "test-step")
 
     def test_get_version_from_payload(self):
-        self.assertEqual(self.version.target, "BTID")
+        self.assertEqual(self.version.target, "5")
+        self.assertEqual(self.version.targetPHID, "BTID")
         self.assertEqual(self.version.diff, "diffID")
         self.assertEqual(self.version.branch, "test-branch")
         self.assertEqual(self.version.revision, "Dtestrev")
 
 class TestVersion(unittest.TestCase):
     def setUp(self):
-        self.version = common.Version('t', 'd', 'b', 'r')
-        self.one_return = {'branch': 'b', 'diff': 'd', 'revision': 'Dr', 'target': 't'}
+        self.version = common.Version('t', 'p', 'd', 'b', 'r')
+        self.one_return = {'branch': 'b', 'diff': 'd', 'revision': 'Dr', 'target': 't', 'targetPHID': 'p'}
 
     def test_repr(self):
         self.assertDictEqual(self.version.dict(), self.one_return)

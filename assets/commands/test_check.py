@@ -124,8 +124,7 @@ class TestPhabricator(unittest.TestCase):
 
     def test_get_versions_since_if_version_in_payload(self):
         new_versions = check.get_new_versions(self.mock_obj, self.previous_version_payload)
-        previous_version_target_id = int(self.previous_version_payload['version']['target'])
-        self.assertIsNone(self.mock_obj.harbormaster.target.search.assert_called_with(after=previous_version_target_id-1, order=['-id']))
+        self.assertIsNone(self.mock_obj.harbormaster.target.search.assert_called_with(after=4, order=['-id']))
 
     def test_get_versions_since_filters_build_step_phid(self):
         target_response = {
@@ -152,7 +151,7 @@ class TestPhabricator(unittest.TestCase):
         self.mock_obj.harbormaster.target.search.return_value = target_response
         new_versions = check.get_new_versions(self.mock_obj, self.previous_version_payload, 'should-remain')
         target_ids = [version.target for version in new_versions]
-        self.assertListEqual(target_ids, ['should-get-this-PHID'])
+        self.assertListEqual(target_ids, ['2'])
     
     def test_correct_call_for_build_buildable_diff_ref(self):
         new_versions = check.get_new_versions(self.mock_obj, self.previous_version_payload)
@@ -164,7 +163,8 @@ class TestPhabricator(unittest.TestCase):
 
     def test_correct_version_constructed(self):
         new_version = check.get_new_versions(self.mock_obj, self.previous_version_payload)[0]
-        self.assertEqual(new_version.target, "PHID-HMBT-n6rbr4r5djx2o4wii7fm")
+        self.assertEqual(new_version.target, "2")
+        self.assertEqual(new_version.targetPHID, "PHID-HMBT-n6rbr4r5djx2o4wii7fm")
         self.assertEqual(new_version.diff, "932")
         self.assertEqual(new_version.branch, "arcpatch-D225_3")
         self.assertEqual(new_version.revision, "D225")

@@ -35,7 +35,7 @@ repo_uri=$(jq -r '.source.repo_uri // ""' < $payload)
 depth=$(jq -r '(.params.depth // 0)' < $payload)
 
 diff=$(jq -r '.version.diff // 0' < $payload)
-target_phid=$(jq -r '.version.target // ""' < $payload)
+target_phid=$(jq -r '.version.targetPHID // ""' < $payload)
 version=$(jq -r '.version' < $payload)
 
 configure_git_global "${git_config_payload}"

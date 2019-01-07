@@ -14,14 +14,16 @@ class Source:
 def get_version_from_payload(payload):
     version = payload.get('version', {}) or {}
     target_id = version.get('target')
+    target_phid = version.get('targetPHID')
     diff_id = version.get('diff')
     branch = version.get('branch')
     revision_id = version.get('revision_id')
-    return Version(target_id, diff_id, branch, revision_id)
+    return Version(target_id, target_phid, diff_id, branch, revision_id)
 
 class Version:
-    def __init__(self, target_id, diff_id, branch, revision_id):
+    def __init__(self, target_id, target_phid, diff_id, branch, revision_id):
         self.target = str(target_id) if target_id else None
+        self.targetPHID = str(target_phid) if target_phid else None
         self.diff = str(diff_id) if diff_id else None
         self.branch = str(branch) if branch else None
         self.revision = 'D' + str(revision_id) if revision_id else None
