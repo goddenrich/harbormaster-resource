@@ -153,5 +153,12 @@ class TestPhabricator(unittest.TestCase):
         with self.assertRaises(ValueError):
             check._check_and_return_one_item_from_phid_search(two_items)
 
+    def test_phids_none_in_search(self):
+        self.assertDictEqual(check.get_build_from_PHID(self.mock_obj, None).__dict__, check.Build({}).__dict__)
+        self.assertDictEqual(check.get_buildable_from_PHID(self.mock_obj, None).__dict__, check.Buildable({}).__dict__)
+        self.assertDictEqual(check.get_rev_from_PHID(self.mock_obj, None).__dict__, check.Rev({}).__dict__)
+        self.assertDictEqual(check.get_diff_from_PHID(self.mock_obj, None).__dict__, check.Diff({}).__dict__)
+
+
 if __name__ == '__main__':
     unittest.main()

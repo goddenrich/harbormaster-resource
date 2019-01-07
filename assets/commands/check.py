@@ -21,19 +21,19 @@ def _check_and_return_one_item_from_phid_search(response):
         return data[0] if data else {}
 
 def get_build_from_PHID(phab, phid):
-    response = phab.harbormaster.build.search(constraints={'phids': [phid]})
+    response = phab.harbormaster.build.search(constraints={'phids': [phid]}) if phid else {}
     return Build(_check_and_return_one_item_from_phid_search(response))
 
 def get_buildable_from_PHID(phab, phid):
-    response = phab.harbormaster.buildable.search(constraints={'phids': [phid]})
+    response = phab.harbormaster.buildable.search(constraints={'phids': [phid]}) if phid else {}
     return Buildable(_check_and_return_one_item_from_phid_search(response))
 
 def get_diff_from_PHID(phab, phid):
-    response = phab.differential.diff.search(constraints={'phids': [phid]})
+    response = phab.differential.diff.search(constraints={'phids': [phid]}) if phid else {}
     return Diff(_check_and_return_one_item_from_phid_search(response))
 
 def get_rev_from_PHID(phab, phid):
-    response = phab.differential.revision.search(constraints={'phids': [phid]})
+    response = phab.differential.revision.search(constraints={'phids': [phid]}) if phid else {}
     return Rev(_check_and_return_one_item_from_phid_search(response))
 
 def get_build_from_target(phab, target):
