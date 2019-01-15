@@ -8,8 +8,15 @@ exec 1>&2 # redirect all output to stderr for logging
 
 source $(dirname $0)/common.sh
 
+source=$1
+
 payload=$(mktemp $TMPDIR/phabricator-pr-resource-request.XXXXXX)
 
 cat > $payload <&0
+
+repository=$(jq -r '.params.repository // ""' < $payload)
+
+cd $source
+cd $repository
 
 python $(dirname $0)/commands/out.py >&3 < $payload

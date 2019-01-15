@@ -19,8 +19,14 @@ class TestOut(unittest.TestCase):
     def test_get_build_status_from_payload(self):
         self.assertEqual(self.build_status, "pass")
 
-    def test_get_target_phid_from_git_config(self):
-        self.assertEqual(out.get_target_phid('test_gitconfig'), 'target-phid-config')
+    def test_get_version_from_git_config(self):
+        version = out.get_version_from_git_config('test_gitconfig')
+        self.assertEqual(version.targetPHID, 'target-phid-config')
+        self.assertEqual(version.base, 'test-base')
+        self.assertEqual(version.branch, 'test-branch')
+        self.assertEqual(version.diff, '123')
+        self.assertEqual(version.revision, 'D234')
+        self.assertEqual(version.target, '1')
 
 
     def test_update_phabricator_with_build_status(self):
