@@ -5,12 +5,22 @@ from common import Source, Version, Diff, Rev, Target, Build, Buildable
 from common import get_version_from_payload, versions_to_json
 
 
-# TODO(goddenrich) make this work if over max number returned by conduit
+def _search_all_since(phab, target_id):
+    after = int(target_id)-1
+    data = []
+    while after:
+        result = phab.harbormaster.target.search(order=['-id'], after=int(after))
+        data += result.get('data', [])
+        after = result.get('cursor', {}).get('after')
+    return data
+
 def get_targets_since(phab, target_id):
     if target_id:
-        search = phab.harbormaster.target.search(order=['-id'], after=int(target_id)-1).get('data')
+        search = _search_all_since(phab, target_id)
     else:
-        search = phab.harbormaster.target.search(limit=1).get('data')
+        #TODO(goddenrich) due to filtering on the buildStepPHID we may filter this out
+        # need to handle this case to get the last target with the corect buildStepPHID
+        search = phab.harbormaster.target.search(limit=1).get('data', [])
     return [Target(target_data) for target_data in search]
 
 def _check_and_return_one_item_from_phid_search(response):
