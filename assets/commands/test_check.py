@@ -104,19 +104,19 @@ class TestPhabricator(unittest.TestCase):
 
 
     def test_get_latest_if_no_version_in_payload(self):
-        new_versions = check.get_new_versions(self.mock_obj, self.no_version_payload)
+        check.get_new_versions(self.mock_obj, self.no_version_payload)
         self.assertIsNone(self.mock_obj.harbormaster.target.search.assert_called_with(limit=1))
 
     def test_get_latest_if_empty_version_in_payload(self):
-        new_versions = check.get_new_versions(self.mock_obj, self.empty_version_payload)
+        check.get_new_versions(self.mock_obj, self.empty_version_payload)
         self.assertIsNone(self.mock_obj.harbormaster.target.search.assert_called_with(limit=1))
 
     def test_get_latest_if_none_version_in_payload(self):
-        new_versions = check.get_new_versions(self.mock_obj, self.none_version_payload)
+        check.get_new_versions(self.mock_obj, self.none_version_payload)
         self.assertIsNone(self.mock_obj.harbormaster.target.search.assert_called_with(limit=1))
 
     def test_get_versions_since_if_version_in_payload(self):
-        new_versions = check.get_new_versions(self.mock_obj, self.previous_version_payload)
+        check.get_new_versions(self.mock_obj, self.previous_version_payload)
         self.assertIsNone(self.mock_obj.harbormaster.target.search.assert_called_with(after=4, order=['-id']))
 
     def test_get_versions_since_filters_build_step_phid(self):
@@ -166,16 +166,15 @@ class TestPhabricator(unittest.TestCase):
         data_empty = {'data': []}
         one_item = {'data': [{'one_item': 'value'}]}
         two_items = {'data': [{'1':'value1'}, {'2':'value2'}]}
-        self.assertDictEqual(check._check_and_return_one_item_from_phid_search(empty_response), {})
-        self.assertDictEqual(check._check_and_return_one_item_from_phid_search(data_empty), {})
-        self.assertDictEqual(check._check_and_return_one_item_from_phid_search(one_item), {'one_item': 'value'})
-        with self.assertRaises(ValueError):
-            check._check_and_return_one_item_from_phid_search(two_items)
+        self.assertListEqual(check._check_and_return_phid_search(empty_response), [{}])
+        self.assertListEqual(check._check_and_return_phid_search(data_empty), [{}])
+        self.assertListEqual(check._check_and_return_phid_search(one_item), [{'one_item': 'value'}])
+        self.assertListEqual(check._check_and_return_phid_search(two_items), [{'1':'value1'},{'2':'value2'}])
 
     def test_phids_none_in_search(self):
-        self.assertDictEqual(check.get_build_from_PHID(self.mock_obj, None).__dict__, check.Build({}).__dict__)
-        self.assertDictEqual(check.get_buildable_from_PHID(self.mock_obj, None).__dict__, check.Buildable({}).__dict__)
-        self.assertDictEqual(check.get_diff_from_PHID(self.mock_obj, None).__dict__, check.Diff({}).__dict__)
+        self.assertDictEqual(check.get_builds_from_PHIDs(self.mock_obj, [None])[0].__dict__, check.Build({}).__dict__)
+        self.assertDictEqual(check.get_buildables_from_PHIDs(self.mock_obj, [None])[0].__dict__, check.Buildable({}).__dict__)
+        self.assertDictEqual(check.get_diffs_from_PHIDs(self.mock_obj, [None])[0].__dict__, check.Diff({}).__dict__)
 
 
 if __name__ == '__main__':

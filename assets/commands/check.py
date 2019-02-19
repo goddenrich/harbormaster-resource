@@ -23,54 +23,49 @@ def get_targets_since(phab, target_id):
         search = phab.harbormaster.target.search(limit=1).get('data', [])
     return [Target(target_data) for target_data in search]
 
-def _check_and_return_one_item_from_phid_search(response):
-    data = response.get('data', [])
-    if len(data) > 1:
-        raise ValueError('phid search returned one item when one expected')
-    else:
-        return data[0] if data else {}
+def _check_and_return_phid_search(response):
+    data = response.get('data', [{}])
+    return data if data else [{}]
 
-def get_build_from_PHID(phab, phid):
-    response = phab.harbormaster.build.search(constraints={'phids': [phid]}) if phid else {}
-    return Build(_check_and_return_one_item_from_phid_search(response))
+# TODO(goddenrich) make these work when over 200 limit
+def get_builds_from_PHIDs(phab, phids):
+    none_stripped = [phid for phid in phids if phid is not None]
+    response = phab.harbormaster.build.search(constraints={'phids': none_stripped}) if none_stripped else {}
+    return [Build(build_data) for build_data in _check_and_return_phid_search(response)]
 
-def get_buildable_from_PHID(phab, phid):
-    response = phab.harbormaster.buildable.search(constraints={'phids': [phid]}) if phid else {}
-    return Buildable(_check_and_return_one_item_from_phid_search(response))
+def get_buildables_from_PHIDs(phab, phids):
+    none_stripped = [phid for phid in phids if phid is not None]
+    response = phab.harbormaster.buildable.search(constraints={'phids': none_stripped}) if none_stripped else {}
+    return [Buildable(buildable_data) for buildable_data in _check_and_return_phid_search(response)]
 
-def get_diff_from_PHID(phab, phid):
-    response = phab.differential.diff.search(constraints={'phids': [phid]}) if phid else {}
-    return Diff(_check_and_return_one_item_from_phid_search(response))
+def get_diffs_from_PHIDs(phab, phids):
+    none_stripped = [phid for phid in phids if phid is not None]
+    response = phab.differential.diff.search(constraints={'phids': none_stripped}) if none_stripped else {}
+    return [Diff(diff_data) for diff_data in _check_and_return_phid_search(response)]
 
-def get_rev_from_PHID(phab, phid):
-    response = phab.differential.revision.search(constraints={'phids': [phid]}) if phid else {}
-    return Rev(_check_and_return_one_item_from_phid_search(response))
+def get_builds_from_targets(phab, targets):
+    return get_builds_from_PHIDs(phab, [target.buildPHID for target in targets])
 
-def get_build_from_target(phab, target):
-    return get_build_from_PHID(phab, target.buildPHID)
+def get_buildables_from_builds(phab, builds):
+    return get_buildables_from_PHIDs(phab, [build.buildablePHID for build in builds])
 
-def get_buildable_from_build(phab, build):
-    return get_buildable_from_PHID(phab, build.buildablePHID)
+def get_diffs_from_buildables(phab, buildables):
+    return get_diffs_from_PHIDs(phab, [buildable.objectPHID for buildable in buildables])
 
-def get_diff_from_buildable(phab, buildable):
-    return get_diff_from_PHID(phab, buildable.objectPHID)
-
-def get_rev_from_buildable(phab, buildable):
-    return get_rev_from_PHID(phab, buildable.containerPHID)
-
-def version_from_target(phab, target):
-    build = get_build_from_target(phab, target)
-    buildable = get_buildable_from_build(phab, build)
-    diff = get_diff_from_buildable(phab, buildable)
-    return Version(target.id, target.phid, diff.id, diff.branch, diff.base)
+def versions_from_targets(phab, targets):
+    builds = get_builds_from_targets(phab, targets)
+    buildables = get_buildables_from_builds(phab, builds)
+    diffs = get_diffs_from_buildables(phab, buildables)
+    return [Version(target.id, target.phid, diff.id, diff.branch, diff.base) for target, diff in zip(targets, diffs)]
 
 def get_new_versions(phab, payload, step=None):
     last_version = get_version_from_payload(payload)
     new_targets = get_targets_since(phab, last_version.target)
     if step:
-        return [version_from_target(phab, target) for target in new_targets if target.buildStepPHID == step]
+        filtered_targets = [target for target in new_targets if target.buildStepPHID == step]
     else:
-        return [version_from_target(phab, target) for target in new_targets]
+        filtered_targets = new_targets
+    return versions_from_targets(phab, filtered_targets)
 
 if __name__ == "__main__":
     payload = json.loads(input())
