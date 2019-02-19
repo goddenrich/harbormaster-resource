@@ -1,7 +1,7 @@
 from phabricator import Phabricator
 import phabricator
 import json
-from common import Source, Version, Diff, Rev, Target, Build, Buildable
+from common import Source, Version, Diff, Target, Build, Buildable
 from common import get_version_from_payload, versions_to_json
 
 
@@ -62,8 +62,7 @@ def version_from_target(phab, target):
     build = get_build_from_target(phab, target)
     buildable = get_buildable_from_build(phab, build)
     diff = get_diff_from_buildable(phab, buildable)
-    rev = get_rev_from_buildable(phab, buildable)
-    return Version(target.id, target.phid, diff.id, diff.branch, diff.base, rev.id)
+    return Version(target.id, target.phid, diff.id, diff.branch, diff.base)
 
 def get_new_versions(phab, payload, step=None):
     last_version = get_version_from_payload(payload)

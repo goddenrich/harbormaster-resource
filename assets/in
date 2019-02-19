@@ -37,7 +37,6 @@ depth=$(jq -r '(.params.depth // 0)' < $payload)
 base=$(jq -r '.version.base // "none"' < $payload)
 branch=$(jq -r '.version.branch // "none"' < $payload)
 diff=$(jq -r '.version.diff // 0' < $payload)
-revision=$(jq -r '.version.revision // "none"' < $payload)
 target=$(jq -r '.version.target // 0' < $payload)
 target_phid=$(jq -r '.version.targetPHID // "none"' < $payload)
 version=$(jq -r '.version' < $payload)
@@ -71,7 +70,6 @@ git checkout -b pr phabricator/diff/$diff
 git config --add phabricator.base $base
 git config --add phabricator.branch $branch
 git config --add phabricator.diff $diff
-git config --add phabricator.revision $revision
 git config --add phabricator.target $target
 git config --add phabricator.targetphid $target_phid
 

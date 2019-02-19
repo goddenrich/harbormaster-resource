@@ -1,8 +1,9 @@
 from phabricator import Phabricator
 import configparser
 import json
-from common import Source, Version, Diff, Rev, Target, Build, Buildable
+from common import Source, Version, Diff, Target, Build, Buildable
 from common import get_version_from_payload, versions_to_json
+import os
 
 GIT_CONFIG_FILE = '.git/config'
 
@@ -12,10 +13,9 @@ def get_version_from_git_config(git_config):
     base = config.get('phabricator', option='base')
     branch = config.get('phabricator', option='branch')
     diff = config.get('phabricator', option='diff')
-    revision = config.get('phabricator', option='revision')[1:] # remove D from start
     target = config.get('phabricator', option='target')
     targetPHID = config.get('phabricator', option='targetphid')
-    return Version(target, targetPHID, diff, branch, base, revision)
+    return Version(target, targetPHID, diff, branch, base)
 
 def get_build_status_from_payload(payload):
     params = payload.get('params', {}) or {}

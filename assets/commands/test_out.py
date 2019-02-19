@@ -25,7 +25,6 @@ class TestOut(unittest.TestCase):
         self.assertEqual(version.base, 'test-base')
         self.assertEqual(version.branch, 'test-branch')
         self.assertEqual(version.diff, '123')
-        self.assertEqual(version.revision, 'D234')
         self.assertEqual(version.target, '1')
 
 

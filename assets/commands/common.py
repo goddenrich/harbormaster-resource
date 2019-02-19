@@ -18,17 +18,15 @@ def get_version_from_payload(payload):
     diff_id = version.get('diff')
     branch = version.get('branch')
     base = version.get('base')
-    revision_id = version.get('revision_id')
-    return Version(target_id, target_phid, diff_id, branch, base, revision_id)
+    return Version(target_id, target_phid, diff_id, branch, base)
 
 class Version:
-    def __init__(self, target_id, target_phid, diff_id, branch, base, revision_id):
+    def __init__(self, target_id, target_phid, diff_id, branch, base):
         self.target = str(target_id) if target_id else None
         self.targetPHID = str(target_phid) if target_phid else None
         self.diff = str(diff_id) if diff_id else None
         self.branch = str(branch) if branch else None
         self.base = str(base) if base else None
-        self.revision = 'D' + str(revision_id) if revision_id else None
 
     def dict(self):
         return self.__dict__
@@ -39,7 +37,6 @@ def versions_to_json(versions):
 class Diff:
     def __init__(self, data):
         self.id = data.get('id')
-        self.revisionPHID = data.get('fields',{}).get('revisionPHID')
         
         def get_base(refs):
             for ref in refs:
@@ -53,10 +50,6 @@ class Diff:
         refs = data.get('fields', {}).get('refs', [])
         self.branch = get_branch(refs)
         self.base = get_base(refs)
-
-class Rev:
-    def __init__(self, data):
-        self.id = data.get('id')
 
 class Target:
     def __init__(self, data):

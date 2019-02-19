@@ -14,7 +14,6 @@ class TestPayload(unittest.TestCase):
                 "targetPHID": "BTID",
                 "diff": "diffID",
                 "branch": "test-branch",
-                "revision_id": "testrev",
                 "base": "baseref"
             }
         }
@@ -32,12 +31,11 @@ class TestPayload(unittest.TestCase):
         self.assertEqual(self.version.diff, "diffID")
         self.assertEqual(self.version.branch, "test-branch")
         self.assertEqual(self.version.base, "baseref")
-        self.assertEqual(self.version.revision, "Dtestrev")
 
 class TestVersion(unittest.TestCase):
     def setUp(self):
-        self.version = common.Version('t', 'p', 'd', 'b', 'ba', 'r')
-        self.one_return = {'branch': 'b', 'base': 'ba', 'diff': 'd', 'revision': 'Dr', 'target': 't', 'targetPHID': 'p'}
+        self.version = common.Version('t', 'p', 'd', 'b', 'ba')
+        self.one_return = {'branch': 'b', 'base': 'ba', 'diff': 'd', 'target': 't', 'targetPHID': 'p'}
 
     def test_repr(self):
         self.assertDictEqual(self.version.dict(), self.one_return)
@@ -176,41 +174,8 @@ class TestDiff(unittest.TestCase):
 
     def test_init(self):
         self.assertEqual(self.diff.id, 932)
-        self.assertEqual(self.diff.revisionPHID, "PHID-DREV-lyl4plyiheajccqjkmo6")
         self.assertEqual(self.diff.branch, "arcpatch-D225_3")
         self.assertEqual(self.diff.base, "5666cdb29e45042565d921b0672f07814aacc06f")
-
-class TestRev(unittest.TestCase):
-    def setUp(self):
-        self.rev_data = {
-                "id": 225,
-                "type": "DREV",
-                "phid": "PHID-DREV-lyl4plyiheajccqjkmo6",
-                "fields": {
-                    "title": "Upgrade from php 5 to php 7",
-                    "authorPHID": "PHID-USER-oyjs33qezlnmaakylm3q",
-                    "status": {
-                        "value": "needs-review",
-                        "name": "Needs Review",
-                        "closed": False,
-                        "color.ansi": "magenta"
-                    },
-                    "repositoryPHID": "PHID-REPO-ayaleo55nfry53ns7x4m",
-                    "diffPHID": "PHID-DIFF-btkzxcucrjcz5feorcuv",
-                    "summary": "As PHP5 gets EOL in 2018, see T2366",
-                    "dateCreated": 1544179006,
-                    "dateModified": 1544965192,
-                    "policy": {
-                        "view": "users",
-                        "edit": "users"
-                    }
-                },
-                "attachments": {}
-        }
-        self.rev = common.Rev(self.rev_data)
-            
-    def test_init(self):
-        self.assertEqual(self.rev.id, 225)
 
 
 if __name__ == '__main__':
